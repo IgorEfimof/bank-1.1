@@ -2,11 +2,24 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="apple-touch-icon" sizes="180x180" href="icons/icon225.png">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="BNK 1.1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="BNK Bank">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#121212">
+    <meta name="msapplication-TileColor" content="#121212">
+    <meta name="msapplication-config" content="none">
+    
+    <!-- Иконки для разных устройств -->
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/icon180.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="icons/icon167.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="icons/icon152.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="icons/icon120.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/icon16.png">
+    <link rel="manifest" href="manifest.json">
+    
     <title>Управление банком</title>
     <style>
         /* Основные стили */
@@ -14,15 +27,22 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
         }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             min-height: 100vh;
+            min-height: -webkit-fill-available;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
             padding: 20px;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
             background-color: #121212;
             color: #ffffff;
             transition: all 0.3s ease;
@@ -42,6 +62,12 @@
         }
         .header h1 {
             margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+        .header p {
+            font-style: italic;
+            font-size: 0.95rem;
+            line-height: 1.4;
         }
         .theme-selector {
             display: flex;
@@ -80,16 +106,19 @@
         }
         .input-group input, .input-group select {
             width: 100%;
-            padding: 8px;
+            padding: 12px;
             border: 1px solid #888FB5;
-            border-radius: 5px;
+            border-radius: 8px;
             font-size: 1rem;
             background-color: rgba(255, 255, 255, 0.1);
             color: inherit;
+            -webkit-appearance: none;
+            appearance: none;
         }
         .input-group input:focus, .input-group select:focus {
             outline: none;
             border-color: #888FB5;
+            box-shadow: 0 0 0 2px rgba(136, 143, 181, 0.3);
         }
         .buttons {
             display: flex;
@@ -99,21 +128,26 @@
         }
         .buttons button {
             flex: 1;
-            padding: 10px;
+            padding: 14px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             background-color: #888FB5;
             color: white;
             cursor: pointer;
             transition: all 0.2s ease;
+            font-size: 1rem;
+            font-weight: 600;
         }
         .buttons button:hover {
             background-color: #a8aed1;
         }
+        .buttons button:active {
+            transform: scale(0.98);
+        }
         .result {
             margin-top: 20px;
             padding: 15px;
-            border-radius: 5px;
+            border-radius: 8px;
             background-color: rgba(136, 143, 181, 0.1);
             text-align: center;
             transition: all 0.3s ease;
@@ -136,11 +170,11 @@
             max-height: 150px;
             overflow-y: auto;
             padding: 10px;
-            border-radius: 5px;
+            border-radius: 8px;
             background-color: rgba(136, 143, 181, 0.1);
         }
         .history-item {
-            padding: 5px;
+            padding: 8px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             font-size: 0.9rem;
         }
@@ -152,7 +186,7 @@
         canvas {
             width: 100%;
             height: 100%;
-            border-radius: 5px;
+            border-radius: 8px;
             background-color: rgba(136, 143, 181, 0.1);
         }
         .probability {
@@ -218,10 +252,14 @@
             border-color: #81C784;
         }
         
-        /* Адаптивность */
+        /* Адаптивность для мобильных устройств */
         @media (max-width: 480px) {
             .container {
                 max-width: 100%;
+                margin-top: 10px;
+            }
+            .header h1 {
+                font-size: 1.6rem;
             }
             .theme-selector {
                 gap: 10px;
@@ -231,6 +269,48 @@
                 height: 45px;
                 font-size: 1.3rem;
             }
+            .input-group input, .input-group select {
+                padding: 14px;
+            }
+            .buttons button {
+                padding: 16px;
+            }
+        }
+        
+        /* Специальные стили для полноэкранного режима на iOS */
+        @supports (-webkit-touch-callout: none) {
+            body {
+                min-height: -webkit-fill-available;
+            }
+        }
+        
+        /* Улучшения для элементов формы на iOS */
+        input[type="number"] {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        /* Стили для скроллбара в истории */
+        .history::-webkit-scrollbar {
+            width: 5px;
+        }
+        .history::-webkit-scrollbar-track {
+            background: rgba(136, 143, 181, 0.1);
+            border-radius: 10px;
+        }
+        .history::-webkit-scrollbar-thumb {
+            background: #888FB5;
+            border-radius: 10px;
+        }
+        
+        /* Анимация при нажатии на кнопки */
+        @keyframes buttonPress {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.95); }
+            100% { transform: scale(1); }
+        }
+        .button-press {
+            animation: buttonPress 0.2s ease;
         }
     </style>
 </head>
@@ -248,15 +328,15 @@
     <div class="container">
         <div class="input-group">
             <label for="bank">Текущий банк (руб.):</label>
-            <input type="number" id="bank" placeholder="Введите сумму" min="0">
+            <input type="number" id="bank" placeholder="Введите сумму" min="0" inputmode="decimal">
         </div>
         <div class="input-group">
             <label for="bet">Ставка (мин. 10 руб., макс. 50% от банка):</label>
-            <input type="number" id="bet" placeholder="10" min="10">
+            <input type="number" id="bet" placeholder="10" min="10" inputmode="decimal">
         </div>
         <div class="input-group">
             <label for="loss-streak">Полоса неудач:</label>
-            <input type="number" id="loss-streak" placeholder="0" min="0">
+            <input type="number" id="loss-streak" placeholder="0" min="0" inputmode="numeric">
         </div>
         <div class="input-group">
             <label for="strategy">Стратегия управления:</label>
@@ -268,8 +348,8 @@
             </select>
         </div>
         <div class="buttons">
-            <button onclick="calculate()">Рассчитать</button>
-            <button onclick="reset()">Сбросить</button>
+            <button onclick="calculate()" id="calculate-btn">Рассчитать</button>
+            <button onclick="reset()" id="reset-btn">Сбросить</button>
         </div>
         
         <div class="result" id="result">
@@ -343,6 +423,20 @@
             loadSavedData();
             updateHistoryDisplay();
             initializeChart();
+            
+            // Добавляем анимацию нажатия для кнопок
+            document.getElementById('calculate-btn').addEventListener('touchstart', function() {
+                this.classList.add('button-press');
+            });
+            document.getElementById('calculate-btn').addEventListener('touchend', function() {
+                this.classList.remove('button-press');
+            });
+            document.getElementById('reset-btn').addEventListener('touchstart', function() {
+                this.classList.add('button-press');
+            });
+            document.getElementById('reset-btn').addEventListener('touchend', function() {
+                this.classList.remove('button-press');
+            });
         });
         
         function switchTheme(theme) {
@@ -354,8 +448,21 @@
             });
             document.querySelector(`.theme-icon[data-theme="${theme}"]`).classList.add('active');
             
+            // Обновляем цвет темы для браузера
+            const themeColor = getThemeColor(theme);
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', themeColor);
+            
             // Сохраняем выбор темы
             localStorage.setItem('selectedTheme', theme);
+        }
+        
+        function getThemeColor(theme) {
+            switch(theme) {
+                case 'light': return '#f5f5f5';
+                case 'blue': return '#1a237e';
+                case 'green': return '#1B5E20';
+                default: return '#121212';
+            }
         }
         
         function loadSavedData() {
